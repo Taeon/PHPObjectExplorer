@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpObjectExplorer;
+namespace PHPObjectExplorer;
 
 class Explorer{
 
