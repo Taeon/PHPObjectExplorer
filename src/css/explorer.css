@@ -1,8 +1,11 @@
 html,body{
 	margin: 0;
 	padding: 0;
-	background-color: #fefef6;
+	background-color: #eeeeee;
 	font-size: 67.5%;
+}
+*{
+	box-sizing: border-box;
 }
 body{
 	font-size: 1.6em;
@@ -17,6 +20,7 @@ body{
 }
 .entity{
 	padding-left: 20px;
+	padding: 5px;
 }
 .entity .title{
 	display: block;
@@ -52,5 +56,9 @@ body{
 	font-style: italic;
 }
 .entity.current{
-	font-weight: bold;
+	background-color: #ddd;
+}
+.entity.value{
+	background-color: white;
+	padding: 5px 10px;
 }

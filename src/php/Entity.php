@@ -119,7 +119,7 @@ class Entity{
 			default:{
 				$title .= $this->type;
 				$properties .= '<div class="properties">';
-				$properties .= '<div class="property"><div class="entity">' . htmlentities( $this->value ) . '</div></div>';
+				$properties .= '<div class="property"><div class="entity value ' . gettype($this->value) . '">' . htmlentities( $this->value ) . '</div></div>';
 				$properties .= '</div>';
 				break;
 			}
