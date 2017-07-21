@@ -21,4 +21,4 @@ echo( $explorer->Render() );
 
 ...that's it.
 
-The output is 'collpased' by default. Click on any property to expand it.
+The output is 'collapsed' by default. Click on any property to expand it.
