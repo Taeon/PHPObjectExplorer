@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpObjectExplorer\\": "src/php"
+            "PHPObjectExplorer\\": "src/php"
         }
     }
 }
