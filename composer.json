@@ -1,5 +1,5 @@
 {
-    "name": "taeon/PHPObjectExplorer",
+    "name": "taeon/php-object-explorer",
     "description": "Interactive PHP object explorer",
     "keywords": ["php", "object", "explorer", "debug", "var_dump"],
     "homepage": "https://github.com/Taeon/PHPObjectExplorer",
