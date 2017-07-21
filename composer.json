@@ -1,0 +1,21 @@
+{
+    "name": "taeon/PHPObjectExplorer",
+    "description": "Interactive PHP object explorer",
+    "keywords": ["php", "object", "explorer", "debug", "var_dump"],
+    "homepage": "https://github.com/Taeon/PHPObjectExplorer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pat Fox",
+            "homepage": "https://github.com/Taeon"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPObjectExplorer\\": "src/php"
+        }
+    }
+}

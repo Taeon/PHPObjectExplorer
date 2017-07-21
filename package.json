@@ -1,0 +1,10 @@
+{
+  "name": "Taeon-PHPObjectExplorer",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Taeon/PHPObjectExplorer.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+  }
+}

@@ -1,0 +1,56 @@
+html,body{
+	margin: 0;
+	padding: 0;
+	background-color: #fefef6;
+	font-size: 67.5%;
+}
+body{
+	font-size: 1.6em;
+	font-size: 1.6rem;
+	font-family: Arial, Helvetica, Helv, sans;
+}
+.explorer{
+	padding: 20px;
+	border: 1px solid #999;
+	border-radius: 3px;
+	margin: 20px;
+}
+.entity{
+	padding-left: 20px;
+}
+.entity .title{
+	display: block;
+	margin-bottom: 10px;
+}
+.entity .entity{
+	margin-left: 20px;
+}
+.entity .entity .properties{
+	height: 0;
+	overflow: hidden;
+}
+.entity.show > .properties{
+	height: auto;
+}
+.properties{
+	border-left: 1px solid #ccc;
+}
+.entity.array{
+	color: #339933;
+}
+.entity.object{
+	color: #333399;
+}
+.entity{
+	color: #993333;
+}
+.entity.array.empty,
+.entity.object.recursion{
+	color: #999;
+}
+.entity.static{
+	font-style: italic;
+}
+.entity.current{
+	font-weight: bold;
+}
