@@ -26,6 +26,15 @@ body{
 	display: block;
 	margin-bottom: 10px;
 }
+.entity .title .name:before{
+	content:'[';
+}
+.entity .title .name:after{
+	content:']';
+}
+.entity .title .visibility{
+	font-style: italic;
+}
 .entity .entity{
 	margin-left: 20px;
 }
@@ -39,14 +48,17 @@ body{
 .properties{
 	border-left: 1px solid #ccc;
 }
+.entity{
+	color: #C9A690;
+}
 .entity.array{
-	color: #339933;
+	color: #D36582;
 }
 .entity.object{
-	color: #333399;
+	color: #2B59C3;
 }
-.entity{
-	color: #993333;
+.entity.string{
+	color: #2E6567;
 }
 .entity.array.empty,
 .entity.object.recursion{

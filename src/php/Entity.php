@@ -73,7 +73,7 @@ class Entity{
 
 		$title = '';
 		if( $name !== false ){
-			$title = '[' . (string)$name . '] ';
+			$title = '<span class="name">' . (string)$name . '</span> ';
 		}
 		if( $this->static !== false ){
 			$classes[] = 'static';
@@ -85,7 +85,7 @@ class Entity{
 		}
 		if( $this->visibility !== false ){
 			$classes[] = $this->visibility;
-			$title .= $this->visibility . ' ';
+			$title .= '<span class="visibility">' . $this->visibility . '</span> ';
 		}
 
 		switch( $this->type ){
@@ -118,6 +118,9 @@ class Entity{
 			}
 			default:{
 				$title .= $this->type;
+				if( $this->type == 'string' ){
+					$title .= ' (' . (string)strlen( $this->value ) . ')';
+				}
 				$properties .= '<div class="properties">';
 				$properties .= '<div class="property"><div class="entity value ' . gettype($this->value) . '">' . htmlentities( $this->value ) . '</div></div>';
 				$properties .= '</div>';
