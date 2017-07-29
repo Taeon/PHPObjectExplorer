@@ -4,76 +4,22 @@ namespace PHPObjectExplorer;
 
 class Entity{
 
-	protected $type;
-	protected $class;
-	protected $value;
-	protected $recursion = false;
 	public $static = false;
 	public $visibility = false;
 	public $dynamic = false;
-	protected $properties = array();
 
-	public function __construct( $object, $entities_lookup = array() ){
-		$this->type = gettype( $object );
-		switch( gettype( $object ) ){
-			case 'object':{
-				// Objects -- iterate over properties
-				$this->class = get_class( $object ) . ' object';
-				$hash = spl_object_hash( $object );
-				if( !in_array( $hash, $entities_lookup ) ){
-					$entities_lookup[] = $hash;
-					$ref = new \ReflectionClass( $object );
-					foreach( $ref->GetProperties() as $property ){
-						$property->SetAccessible( true );
-						$value = $property->GetValue( $object );
-						$entity = new Entity( $value, $entities_lookup );
-						$this->properties[ $property->GetName() ] = $entity;
-						$entity->static = $property->isStatic();
-						if( $property->isPublic() ){
-							$entity->visibility = 'public';
-						}
-						if( $property->isProtected() ){
-							$entity->visibility = 'protected';
-						}
-						if( $property->isPrivate() ){
-							$entity->visibility = 'private';
-						}
-					}
-					// Pick up runtime properties
-					foreach( $object as $property => $value ){
-						if( !array_key_exists( $property, $this->properties ) ){
-							$entity =  new Entity( $value, $entities_lookup );
-							$this->properties[ $property ] = $entity;
-							$entity->visibility = 'public';
-							$entity->dynamic = true;
-						}
-					}
-				} else {
-					$this->recursion = true;
-				}
-				break;
-			}
-			case 'array':{
-				// Array -- iterate over elements
-				foreach( $object as $index => $value ){
-					$this->properties[ $index ] = new Entity( $value, $entities_lookup );
-				}
-				break;
-			}
-			default:{
-				// Everything else (i..e primitives)
-				// Just store the value
-				$this->value = $object;
-			}
-		}
+	public function __construct( $entity ){
+		$this->entity = $entity;
 	}
-	public function Render( $name = false ){
-		$properties = '';
-		$classes = array( $this->type );
+	public function Render( $name = false, &$entities_lookup = array() ){
 
+		$entity_type = gettype( $this->entity );
+		$properties_html = '';
 		$title = '';
+		$classes = array( $entity_type );
+
 		if( $name !== false ){
-			$title = '<span class="name">' . (string)$name . '</span> ';
+			$title .= '<span class="name">' . (string)$name . '</span> ';
 		}
 		if( $this->static !== false ){
 			$classes[] = 'static';
@@ -87,44 +33,69 @@ class Entity{
 			$classes[] = $this->visibility;
 			$title .= '<span class="visibility">' . $this->visibility . '</span> ';
 		}
+		switch( $entity_type ){
+			case 'object':{
+				// Objects -- iterate over properties
+				$entity_class = get_class( $this->entity ) . ' object';
+				$hash = spl_object_hash( $this->entity );
 
-		switch( $this->type ){
-			case 'object':
-			{
-				$properties .= '<div class="properties">';
-				foreach( $this->properties as $property_name => $property ){
-					$properties .= '<div class="property">' . $property->Render( $property_name ) . '</div>';
-				}
-				$properties .= '</div>';
-				$title .= $this->class;
-				if( $this->recursion ){
-					$classes[] = 'recursion';
+				$title .= get_class( $this->entity );
+
+				$properties = array();
+
+				if( !in_array( $hash, $entities_lookup ) ){
+					$entities_lookup[] = $hash;
+					$ref = new \ReflectionClass( $this->entity );
+					foreach( $ref->GetProperties() as $property ){
+						$property->SetAccessible( true );
+						$value = $property->GetValue( $this->entity );
+						$child_entity = new Entity( $value, $entities_lookup );
+						$child_entity->static = $property->isStatic();
+						if( $property->isPublic() ){
+							$child_entity->visibility = 'public';
+						}
+						if( $property->isProtected() ){
+							$child_entity->visibility = 'protected';
+						}
+						if( $property->isPrivate() ){
+							$child_entity->visibility = 'private';
+						}
+						$properties_html .= '<div class="property">' . $child_entity->Render( $property->getName(), $entities_lookup ) . '</div>';
+						$properties[] = $property->getName();
+					}
+					// Pick up runtime properties
+					foreach( $this->entity as $property => $value ){
+						if( !in_array( $property, $properties ) ){
+							$child_entity = new Entity( $value );
+							$child_entity->visibility = 'public';
+							$child_entity->dynamic = true;
+							$properties_html .= '<div class="property">' . $child_entity->Render( $property, $entities_lookup ) . '</div>';
+						}
+					}
+				} else {
 					$title .= ' ** RECURSION **';
 				}
 				break;
 			}
-			case 'array':
-			{
-				$properties .= '<div class="properties">';
-				foreach( $this->properties as $property_name => $property ){
-					$properties .= '<div class="property">' . $property->Render( $property_name ) . '</div>';
-				}
-				$properties .= '</div>';
-				$title .= $this->type . ' (' . count( $this->properties ) . ')';
-				if( count( $this->properties ) === 0 ){
+			case 'array':{
+				$title .= $entity_type . ' (' . count( $this->entity ) . ')';
+				if( count( $this->entity ) === 0 ){
 					$classes[] = 'empty';
+				}
+
+				// Iterate over elements
+				foreach( $this->entity as $index => $value ){
+					$properties_html .= '<div class="property">' . ( new Entity( $value ) )->Render( $index, $entities_lookup ) . '</div>';
 				}
 				break;
 			}
 			default:{
-				$title .= $this->type;
-				if( $this->type == 'string' ){
-					$title .= ' (' . (string)strlen( $this->value ) . ')';
+				// Everything else (i..e primitives)
+				$title .= $entity_type;
+				if( $entity_type == 'string' ){
+					$title .= ' (' . (string)strlen( $this->entity ) . ')';
 				}
-				$properties .= '<div class="properties">';
-				$properties .= '<div class="property"><div class="entity value ' . gettype($this->value) . '">' . htmlentities( $this->value ) . '</div></div>';
-				$properties .= '</div>';
-				break;
+				$properties_html .= '<div class="property"><div class="entity value ' . gettype( $this->entity ) . '">' . htmlentities( $this->entity ) . '</div></div>';
 			}
 		}
 
@@ -132,9 +103,12 @@ class Entity{
 			<span class="title">' . $title . '</span>
 		';
 
-		$output .= $properties;
+		if( $properties_html != '' ){
+			$output .= '<div class="properties">' . $properties_html . '</div>';
+		}
 
 		$output .= '</div>';
+
 		return $output;
 	}
 }
